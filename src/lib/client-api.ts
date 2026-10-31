@@ -1,6 +1,7 @@
 'use client';
 
 import type { SearchResponse, SearchStreamEvent, SourceSearchOutcome, VideoDetail, DoubanResponse, BangumiCalendarResponse, AuthStatusResponse, SourceConfig, SearchResultItem, LivePlaylistResponse, LiveEpgResponse, SourceListPayload, QualityProbeItem, QualityProbeResult } from './types';
+import type { CastAction, CastControlResponse, CastDevice, CastSessionResponse } from './cast/types';
 
 /**
  * 客户端 API 封装。401 时触发全局事件打开登录框，
@@ -312,6 +313,27 @@ export const api = {
 
     await consumeNdjson<LiveProbeResult>(res, onResult);
   },
+
+  /** —— 局域网 DLNA 投屏 —— */
+
+  /** 扫描局域网内支持 DLNA 投屏的设备（电视） */
+  castDiscover: () => request<{ devices: CastDevice[] }>('/api/cast/discover'),
+
+  /** 建立投屏会话并推流到指定设备，返回 sid 与电视拉流地址 */
+  castStart: (url: string, deviceId: string) =>
+    request<CastSessionResponse>('/api/cast/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, deviceId }),
+    }),
+
+  /** 遥控电视：play / pause / stop / setUri（setUri 传新 url，返回新会话） */
+  castControl: (sid: string, action: CastAction, url?: string) =>
+    request<CastControlResponse>('/api/cast/control', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sid, action, url }),
+    }),
 };
 
 export interface SearchFailure {

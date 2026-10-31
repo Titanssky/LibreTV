@@ -22,6 +22,7 @@ import { skipMarkKey, validateSegment, type SkipSegment } from '@/lib/skip-marks
 import type { PlayerSkipApi } from '@/components/player-shell';
 import { useToast } from '@/components/toast';
 import { enqueueDownload } from '@/components/download-manager';
+import { CastPanel } from '@/components/cast-panel';
 import { Icon } from '@/components/icon';
 import { useAuth } from '@/components/auth';
 import { resolveSource, useAppStore } from '@/lib/store';
@@ -304,6 +305,7 @@ function WatchContent() {
             >
               下载本集
             </button>
+            <CastPanel currentUrl={currentUrl} />
             <button className="btn-ghost btn-sm" onClick={() => setSwitchOpen(true)}>
               切换资源
             </button>
